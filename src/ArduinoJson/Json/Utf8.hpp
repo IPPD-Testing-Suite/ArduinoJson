@@ -17,7 +17,7 @@ inline void encodeCodepoint(uint32_t codepoint32, TStringBuilder& str) {
     str.append(char(codepoint32));
   } else {
     // a buffer to store the string in reverse
-    char buf[5];
+    char buf[4];
     char* p = buf;
 
     *(p++) = 0;

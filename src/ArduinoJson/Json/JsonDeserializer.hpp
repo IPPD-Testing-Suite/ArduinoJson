@@ -152,9 +152,6 @@ class JsonDeserializer {
 
     array->toArray();
 
-    if (nestingLimit.reached())
-      return DeserializationError::TooDeep;
-
     // Skip opening braket
     ARDUINOJSON_ASSERT(current() == '[');
     move();
@@ -691,7 +688,7 @@ class JsonDeserializer {
   bool foundSomething_;
   Latch<TReader> latch_;
   ResourceManager* resources_;
-  char buffer_[64];  // using a member instead of a local variable because it
+  char buffer_[16];  // using a member instead of a local variable because it
                      // ended in the recursive path after compiler inlined the
                      // code
 };

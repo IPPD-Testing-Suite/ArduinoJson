@@ -36,7 +36,7 @@ class StringBuilder {
       return;
     }
 
-    p[size_] = 0;
+    p[size_ + 1] = 0;
     StringNode* node = resources_->getString(adaptString(p, size_));
     if (!node) {
       node = resources_->resizeString(node_, size_);

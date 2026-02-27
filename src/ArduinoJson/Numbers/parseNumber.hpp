@@ -198,12 +198,6 @@ inline Number parseNumber(const char* s) {
 
     while (isdigit(*s)) {
       exponent = exponent * 10 + (*s - '0');
-      if (exponent + exponent_offset > traits::exponent_max) {
-        if (negative_exponent)
-          return Number(is_negative ? -0.0f : 0.0f);
-        else
-          return Number(is_negative ? -traits::inf() : traits::inf());
-      }
       s++;
     }
     if (negative_exponent)
