@@ -333,4 +333,52 @@ allocated ... of size N here
 
 ---
 
+---
+
+## Build System Integration
+
+The five harnesses are integrated into the existing fuzzing build system identically to the original `json_fuzzer` and `msgpack_fuzzer`.
+
+### Directory structure added
+
+| Directory | Purpose |
+|-----------|---------|
+| `numeric_overflow_corpus/` | Fuzzer-generated corpus (git-ignored) |
+| `numeric_overflow_seed_corpus/` | Seed: 17-digit number (trigger for Bug 1) |
+| `unicode_escape_corpus/` | Fuzzer-generated corpus (git-ignored) |
+| `unicode_escape_seed_corpus/` | Seed: raw bytes `D8 3D DE 00` (surrogate pair trigger for Bug 2) |
+| `float_exponent_corpus/` | Fuzzer-generated corpus (git-ignored) |
+| `float_exponent_seed_corpus/` | Seed: 10-digit exponent digits (trigger for Bug 3) |
+| `deep_nesting_corpus/` | Fuzzer-generated corpus (git-ignored) |
+| `deep_nesting_seed_corpus/` | Seed: 200 `[` bytes (trigger depth for Bug 4) |
+| `string_save_corpus/` | Fuzzer-generated corpus (git-ignored) |
+| `string_save_seed_corpus/` | Seed: 31 printable chars (trigger for Bug 5) |
+
+### Makefile (OSS-Fuzz)
+
+All five harnesses are listed in the `all` target. The existing pattern rules handle compilation, seed corpus zipping, and `.options` file generation automatically:
+
+```makefile
+$(OUT)/numeric_overflow_fuzzer
+$(OUT)/numeric_overflow_fuzzer_seed_corpus.zip
+$(OUT)/numeric_overflow_fuzzer.options
+# ... (same pattern for each harness)
+```
+
+### CMakeLists.txt (local / CI via CTest)
+
+Five `add_fuzzer()` calls were added inside the existing Clang ≥ 6 guard:
+
+```cmake
+add_fuzzer(numeric_overflow)
+add_fuzzer(unicode_escape)
+add_fuzzer(float_exponent)
+add_fuzzer(deep_nesting)
+add_fuzzer(string_save)
+```
+
+Each produces a CTest test that compiles the harness with `-fsanitize=fuzzer`, runs it against its corpus and seed corpus for 5 seconds (`-max_total_time=5`), and tags it with the `Fuzzing` label — the same configuration used by `json_fuzzer` and `msgpack_fuzzer`.
+
+---
+
 *This report documents intentional research vulnerabilities. The upstream ArduinoJson library does not contain these bugs.*

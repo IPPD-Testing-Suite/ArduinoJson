@@ -64,4 +64,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION
 
 	add_fuzzer(json)
 	add_fuzzer(msgpack)
+	add_fuzzer(numeric_overflow)
+	add_fuzzer(unicode_escape)
+	add_fuzzer(float_exponent)
+	add_fuzzer(deep_nesting)
+	add_fuzzer(string_save)
 endif()
