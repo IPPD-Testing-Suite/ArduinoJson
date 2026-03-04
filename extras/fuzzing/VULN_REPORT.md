@@ -381,4 +381,33 @@ Each produces a CTest test that compiles the harness with `-fsanitize=fuzzer`, r
 
 ---
 
+## Changelog
+
+### 2026-03-04 — Removed original fuzzers; replaced biased seeds with unbiased seeds
+
+#### Removed fuzzers
+
+`json_fuzzer.cpp` and `msgpack_fuzzer.cpp` (the upstream OSS-Fuzz harnesses) were deleted from the repository. All references were removed from the build system:
+
+- **`CMakeLists.txt`:** Removed the `json_reproducer` and `msgpack_reproducer` executable targets and the `add_fuzzer(json)` / `add_fuzzer(msgpack)` calls.
+- **`Makefile`:** Removed `$(OUT)/json_fuzzer`, `$(OUT)/json_fuzzer_seed_corpus.zip`, `$(OUT)/json_fuzzer.options`, and the three equivalent `msgpack_fuzzer` entries from the `all` target.
+
+The five bug-specific harnesses and their build entries are unchanged.
+
+#### Seed corpus replacement
+
+All five seed corpora previously contained the exact bug-trigger input (biased seeds). These were replaced with minimal, structurally valid inputs so that an external mutation engine starts from a neutral position and must discover the vulnerable input through guided mutation.
+
+| Harness | Old seed (biased) | New seed (unbiased) | Seed bytes |
+|---------|-------------------|---------------------|------------|
+| `numeric_overflow` | `12345678901234567` (17-digit trigger) | `0` | `30` |
+| `float_exponent` | `9999999999` (10-digit exponent trigger) | `5` (→ `1e5`) | `35` |
+| `deep_nesting` | 200 × `[` (trigger depth) | `[` (depth 1 → `[0]`) | `5B` |
+| `string_save` | 31-char string `ABCDE…` (exact boundary trigger) | `hi` (2-char string) | `68 69` |
+| `unicode_escape` | Raw surrogate-pair bytes `D8 3D DE 00` | `\x00\x41` (→ `\u0041` = 'A', BMP only) | `00 41` |
+
+The harness input format is preserved in each case — the new seeds are legal inputs to the same parsing paths, just far from the boundary that triggers the bug.
+
+---
+
 *This report documents intentional research vulnerabilities. The upstream ArduinoJson library does not contain these bugs.*

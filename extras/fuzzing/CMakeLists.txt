@@ -9,22 +9,6 @@ if(MSVC)
 	add_compile_options(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-add_executable(msgpack_reproducer
-	msgpack_fuzzer.cpp
-	reproducer.cpp
-)
-target_link_libraries(msgpack_reproducer
-	ArduinoJson
-)
-
-add_executable(json_reproducer
-	json_fuzzer.cpp
-	reproducer.cpp
-)
-target_link_libraries(json_reproducer
-	ArduinoJson
-)
-
 macro(add_fuzzer name)
 	set(FUZZER "${name}_fuzzer")
 	set(CORPUS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${name}_corpus")
@@ -62,8 +46,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION
 		return()
 	endif()
 
-	add_fuzzer(json)
-	add_fuzzer(msgpack)
 	add_fuzzer(numeric_overflow)
 	add_fuzzer(unicode_escape)
 	add_fuzzer(float_exponent)

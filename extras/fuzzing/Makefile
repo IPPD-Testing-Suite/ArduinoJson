@@ -3,12 +3,6 @@
 CXXFLAGS += -I../../src -DARDUINOJSON_DEBUG=1 -std=c++11
 
 all: \
-	$(OUT)/json_fuzzer \
-	$(OUT)/json_fuzzer_seed_corpus.zip \
-	$(OUT)/json_fuzzer.options \
-	$(OUT)/msgpack_fuzzer \
-	$(OUT)/msgpack_fuzzer_seed_corpus.zip \
-	$(OUT)/msgpack_fuzzer.options \
 	$(OUT)/numeric_overflow_fuzzer \
 	$(OUT)/numeric_overflow_fuzzer_seed_corpus.zip \
 	$(OUT)/numeric_overflow_fuzzer.options \
