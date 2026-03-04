@@ -27,7 +27,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
   std::string json = "\"";
   for (size_t i = 0; i + 1 < size; i += 2) {
     uint16_t codeunit =
-        (uint16_t(data[i]) << 8) | uint16_t(data[i + 1]);
+        static_cast<uint16_t>((uint16_t(data[i]) << 8) | uint16_t(data[i + 1]));
     json += "\\u";
     json += nibbleToHex((codeunit >> 12) & 0xF);
     json += nibbleToHex((codeunit >>  8) & 0xF);
